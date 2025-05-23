@@ -1,41 +1,27 @@
 name: assignment-test
 on:
-  push:
-    tags-ignore:
-      - '*'
-    branches:
-      - '*'
-
+    push:
+        tags-ignore:
+            - '*'
+        branches:
+            - '*'
 jobs:
-  full-test:
-    container: cuaesd/aesd-autotest:24-assignment4-buildroot
-    runs-on: self-hosted
-    timeout-minutes: 120
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add GitHub to known_hosts
-        run: ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-      - name: Checkout submodules
-        run: GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git submodule update --init --recursive
-
-      - name: List files in workspace
-        run: ls -al
-        working-directory: ${{ github.workspace }}
-
-      - name: Ensure full-test.sh is executable
-        run: chmod +x full-test.sh
-        working-directory: ${{ github.workspace }}
-
-      - name: Run full test
-        run: |
-          echo "Running script:"
-          ls -l full-test.sh
-          ./full-test.sh || (echo "Script failed or missing" && exit 1)
-        working-directory: ${{ github.workspace }}
+    full-test:
+        container: cuaesd/aesd-autotest:24-assignment4-buildroot
+        runs-on: self-hosted
+        timeout-minutes: 120
+        steps:
+          - uses: actions/checkout@v2
+          - name: Checkout submodules
+            run: git submodule update --init --recursive
+          - uses: webfactory/ssh-agent@v0.5.3
+            with:
+                ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          - name: Run full test
+            env:
+              GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
+            run: ./full-test.sh
+          - name: Cleanup
+            if: always()
+            run: |
+              ssh-add -D
