@@ -7,4 +7,4 @@
 	branch = 2024.02.x
 [submodule "base_external/aesd-assignments"]
 	path = base_external/aesd-assignments
-	url = git@github.com:cu-ecen-aeld/assignments-3-and-later-karimmahmoud22.git
+	url = https://github.com/cu-ecen-aeld/assignments-3-and-later-karimmahmoud22.git
