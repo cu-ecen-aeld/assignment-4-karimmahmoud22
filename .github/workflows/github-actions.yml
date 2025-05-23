@@ -21,6 +21,14 @@ jobs:
               mkdir -p ~/.ssh
               ssh-keyscan github.com >> ~/.ssh/known_hosts
 
+          - name: Fix known_hosts mismatch
+            run: |
+              mkdir -p ~/.ssh
+              ssh-keygen -R github.com || true
+              ssh-keyscan github.com >> ~/.ssh/known_hosts
+            env:
+              SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
+
           - name: Checkout submodules
             run: git submodule update --init --recursive
           - name: Run full test
