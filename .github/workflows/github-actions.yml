@@ -35,7 +35,7 @@ jobs:
       - name: Run full test
         run: ./full-test.sh
         env:
-          GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
+          GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no" 
 
       - name: Cleanup
         if: always()
