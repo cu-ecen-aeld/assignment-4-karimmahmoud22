@@ -25,14 +25,17 @@ jobs:
       - name: Checkout submodules
         run: GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git submodule update --init --recursive
 
-      - name: Make full-test.sh executable
-        run: chmod +x ./full-test.sh
+      - name: List files in workspace
+        run: ls -al
+        working-directory: ${{ github.workspace }}
+
+      - name: Ensure full-test.sh is executable
+        run: chmod +x full-test.sh
         working-directory: ${{ github.workspace }}
 
       - name: Run full test
         run: |
-          echo "Listing files in workspace:"
-          ls -al
-          echo "Running full-test.sh"
-          ./full-test.sh
+          echo "Running script:"
+          ls -l full-test.sh
+          ./full-test.sh || (echo "Script failed or missing" && exit 1)
         working-directory: ${{ github.workspace }}
